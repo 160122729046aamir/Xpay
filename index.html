@@ -2169,58 +2169,34 @@ function quoteSwap(){
   }
   window.copyReferralImage=copyReferralImage;
 
-  async function shareReferralOnX(){
+  function shareReferralOnX(){
     const name=username();
     if(!name){
       toast('Set your username first');
       openUsernameTask();
       return;
     }
-    let value=$('referralLinkDisplay')?.textContent||'';
-    if(!value){
-      value=referralBaseUrl()+'/join?ref='+encodeURIComponent(name);
-      if($('referralLinkDisplay')) $('referralLinkDisplay').textContent=value;
-      if($('referralBox')) $('referralBox').style.display='flex';
-    }
-    const text='Meet @Xpaydotfamily.\n\nA simpler way to Pay, Swap & Earn onchain. Built around $XPAY, with a focus on simple UX and the next layer of crypto coming to Robinhood Chain.\n\nComplete the 3-step Welcome Campaign & unlock your $3 reward.\n\n𝕏 @Xpaydotfamily\n✈️ t.me/Xpaydotfamily\n\nPay. Swap. Simple.\n\nJoin XPay 👇';
+
+    const value=referralBaseUrl()+'/join?ref='+encodeURIComponent(name);
+    if($('referralLinkDisplay')) $('referralLinkDisplay').textContent=value;
+    if($('referralBox')) $('referralBox').style.display='flex';
+
+    const text='Meet @Xpaydotfamily.\n\nA simpler way to Pay, Swap & Earn onchain. Build on @RobinhoodApp\n\nComplete the 3-step Welcome Campaign & unlock your $3 reward.\n\n𝕏 @Xpaydotfamily\n✈️ t.me/Xpaydotfamily\n\nPay. Swap. Simple.\n\nJoin XPay 👇';
     const share='https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(value);
 
-    // On supported mobile browsers, use the native share sheet so X can receive
-    // the referral banner as an actual image attachment.
-    let sharedWithImage=false;
-    try{
-      if(navigator.share && navigator.canShare){
-        const imageData=XPAY_REFERRAL_IMAGE;
-        const response=await fetch(imageData);
-        if(response.ok){
-          const blob=await response.blob();
-          const file=new File([blob],'xpay-referral-banner.png',{type:blob.type||'image/png'});
-          if(navigator.canShare({files:[file]})){
-            await navigator.share({files:[file],text:text,url:value});
-            sharedWithImage=true;
-          }
-        }
-      }
-    }catch{}
+    // Open X directly. Do not use navigator.share here, because that opens the
+    // Android/iOS system share sheet first and makes the user tap X manually.
+    const state=campaignState();
+    state.refer=true;
+    saveCampaign(state);
+    refreshCampaign();
 
-    if(!sharedWithImage){
+    try{
+      window.location.href=share;
+    }catch{
       const popup=window.open(share,'_blank');
-      if(popup){
-        try{ popup.opener=null; }catch{}
-        const state=campaignState();
-        state.refer=true;
-        saveCampaign(state);
-        refreshCampaign();
-        toast('Referral shared on X');
-      }else{
-        toast('Open X to finish sharing.');
-      }
-    }else{
-      const state=campaignState();
-      state.refer=true;
-      saveCampaign(state);
-      refreshCampaign();
-      toast('Referral ready to share on X');
+      if(popup){ try{ popup.opener=null; }catch{} }
+      else toast('Open X to finish sharing.');
     }
   }
   window.shareReferralOnX=shareReferralOnX;
@@ -2241,6 +2217,26 @@ function quoteSwap(){
     updatePayBalance();
   }
   window.refreshWallet=refreshWallet;
+
+  function handleIncomingReferral(){
+    const params = new URLSearchParams(window.location.search);
+    const ref = (params.get('ref') || '').replace(/^@/,'').trim().toLowerCase();
+    if(!ref || !validUsername(ref)) return false;
+
+    // Keep the referring username available for the campaign/join flow.
+    safeSet('xpay_referrer', ref);
+
+    // Show the campaign screen for visitors arriving through a referral link.
+    // The referral parameter is removed from the visible URL after capture.
+    try{
+      const cleanUrl = window.location.origin + '/';
+      window.history.replaceState({}, document.title, cleanUrl);
+    }catch{}
+
+    go('campaign');
+    return true;
+  }
+  window.handleIncomingReferral = handleIncomingReferral;
 
   function init(){
     initEntryGate();
@@ -2265,7 +2261,7 @@ function quoteSwap(){
     ['fromAsset','toAsset'].forEach(id=>$(id)?.addEventListener('change',()=>{quoteSwap();updateActionStates();}));
     $('swapAmount')?.addEventListener('input',quoteSwap);
     updateRecipientPreview(); quoteSwap(); refreshWallet(); refreshCampaign(); renderActivity(); updateActionStates();
-    go('home');
+    if(!handleIncomingReferral()) go('home');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();

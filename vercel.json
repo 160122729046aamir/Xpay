@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "Web4Agent",
+  "name": "Xpay",
   "builds": [
     {
       "src": "index.html",
