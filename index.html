@@ -1238,6 +1238,267 @@ body.x-coming-open{overflow:hidden!important}
   .reward-v2-footer span{min-width:0;}
 }
 </style>
+
+<style id="xpay-campaign-mobile-safe-space">
+@media(max-width:680px){
+  #campaign.screen{padding-bottom:calc(118px + env(safe-area-inset-bottom));}
+  #campaignClaimLock{scroll-margin-bottom:118px;}
+  .campaign-task{min-width:0;}
+  .campaign-task .task-content{min-width:0;}
+  .campaign-task .task-content p{overflow-wrap:anywhere;}
+  .claim-identity-grid{grid-template-columns:1fr;}
+}
+</style>
+<style id="xpay-campaign-complete-modal">
+.campaign-complete-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(4,6,5,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.campaign-complete-modal.open{display:flex;animation:ccmFade .22s ease both}
+.campaign-complete-dialog{width:min(460px,100%);position:relative;padding:30px;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:linear-gradient(160deg,#171a19,#0d0f0e);box-shadow:0 30px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.045);text-align:center;overflow:hidden;animation:ccmIn .3s cubic-bezier(.2,.8,.2,1) both}
+.campaign-complete-dialog:before{content:"";position:absolute;width:260px;height:160px;left:50%;top:-105px;transform:translateX(-50%);background:rgba(255,255,255,.075);filter:blur(42px);pointer-events:none}
+.ccm-check{position:relative;width:58px;height:58px;margin:0 auto 17px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.18);background:#f1f3f2;color:#101312;font-size:25px;font-weight:900;box-shadow:0 10px 35px rgba(0,0,0,.22)}
+.ccm-eyebrow{position:relative;font-size:9px;font-weight:800;letter-spacing:.18em;color:#8d9591;text-transform:uppercase}
+.ccm-title{position:relative;margin:9px 0 8px;font-size:27px;letter-spacing:-.045em;color:#f3f5f4}
+.ccm-copy{position:relative;margin:0 auto;max-width:355px;color:#929a96;font-size:12px;line-height:1.65}
+.ccm-reward{position:relative;margin:20px auto 18px;padding:16px 18px;width:min(250px,100%);border:1px solid rgba(255,255,255,.09);border-radius:16px;background:rgba(255,255,255,.025)}
+.ccm-reward small{display:block;color:#69716d;font-size:8px;font-weight:800;letter-spacing:.14em}
+.ccm-reward strong{display:block;margin-top:5px;color:#f3f5f4;font-size:32px;letter-spacing:-.06em}
+.ccm-next{position:relative;padding:13px 14px;margin-top:8px;border-radius:13px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.075);text-align:left}
+.ccm-next strong{display:block;font-size:12px;color:#e4e8e6}.ccm-next span{display:block;margin-top:3px;color:#7e8782;font-size:10px;line-height:1.5}
+.ccm-tg{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.13);border-radius:11px;background:#f1f3f2;color:#101312;text-decoration:none;font-size:12px;font-weight:800;transition:transform .18s ease,background .18s ease}
+.ccm-tg:hover{background:#fff;transform:translateY(-1px)}.ccm-tg-icon{font-size:14px}.ccm-close{position:relative;width:100%;margin-top:9px;padding:10px;border:0;background:transparent;color:#747d78;font-size:11px;cursor:pointer}
+@keyframes ccmFade{from{opacity:0}to{opacity:1}}@keyframes ccmIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:520px){.campaign-complete-modal{padding:14px}.campaign-complete-dialog{padding:25px 18px;border-radius:20px}.ccm-title{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.campaign-complete-modal.open,.campaign-complete-dialog{animation:none}.ccm-tg{transition:none}}
+</style>
+<style id="xpay-campaign-claim-lock">
+.campaign-claim-lock{margin-top:16px;padding:20px;border:1px solid rgba(255,255,255,.10);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));box-shadow:0 18px 45px rgba(0,0,0,.16)}
+.campaign-claim-lock-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.campaign-claim-lock h3{margin:4px 0 7px}.campaign-claim-lock p{margin:0;color:var(--muted,#9b9ca3);line-height:1.55}.campaign-claim-lock-icon{font-size:28px}.claim-identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.claim-identity-grid>div{padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.07)}.claim-identity-grid span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#888b93;margin-bottom:5px}.claim-identity-grid strong{font-size:14px}.claim-warning{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(255,180,0,.07);border:1px solid rgba(255,180,0,.14);font-size:12px;line-height:1.55;color:#c8c9ce}.campaign-claim-lock .task-action:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:600px){.claim-identity-grid{grid-template-columns:1fr}.campaign-claim-lock-head{align-items:flex-start}.campaign-claim-lock-icon{font-size:24px}}
+</style>
+
+<style id="xpay-campaign-premium">
+/* Premium campaign polish: restrained, neutral, product-grade UI */
+.campaign-tasks{gap:12px;margin-top:16px}
+.campaign-task{
+  position:relative;
+  grid-template-columns:34px 42px minmax(0,1fr) auto;
+  min-height:78px;
+  padding:15px 16px;
+  border:1px solid rgba(255,255,255,.075)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.018)!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.10);
+}
+.campaign-task:hover{
+  transform:none!important;
+  border-color:rgba(255,255,255,.14)!important;
+  background:rgba(255,255,255,.028)!important;
+}
+.task-number{color:#666c69!important;font-size:10px;letter-spacing:.08em}
+.task-icon{
+  width:40px!important;height:40px!important;border-radius:12px!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  background:#111312!important;color:#b9bfbc!important;
+}
+.task-content h4{font-size:14px!important;font-weight:650;letter-spacing:-.01em}
+.task-content p{color:#777e7a!important;font-size:12px!important;line-height:1.5!important}
+.task-action{
+  min-height:38px;
+  border-radius:10px!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  background:#f4f5f4!important;color:#101211!important;
+  font-size:12px;font-weight:700;
+  box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+.task-action:hover{background:#fff!important}
+.campaign-task.is-complete{
+  border-color:rgba(255,255,255,.10)!important;
+  background:rgba(255,255,255,.026)!important;
+  box-shadow:inset 2px 0 0 rgba(255,255,255,.24);
+}
+.campaign-task.is-complete .task-icon{
+  background:#e7e9e8!important;color:#151716!important;
+  border-color:#e7e9e8!important;box-shadow:none!important;
+}
+.campaign-task.is-complete .task-number{color:#969d99!important}
+.campaign-task.is-complete .task-action{
+  background:rgba(255,255,255,.055)!important;color:#b7bcb9!important;
+  border-color:rgba(255,255,255,.10)!important;box-shadow:none;
+}
+
+.campaign-claim-lock{
+  position:relative;
+  margin-top:18px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+  box-shadow:0 14px 45px rgba(0,0,0,.14);
+}
+.campaign-claim-lock-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+}
+.campaign-claim-lock .campaign-kicker{color:#8d9490!important;letter-spacing:.15em;font-size:9px;font-weight:800}
+.campaign-claim-lock h3{margin:7px 0 5px;font-size:19px;letter-spacing:-.025em;color:#eceeed}
+.campaign-claim-lock-head p{margin:0;max-width:610px;color:#777e7a;font-size:12px;line-height:1.55}
+.campaign-claim-lock-icon{
+  flex:0 0 auto;padding:7px 9px;border:1px solid rgba(255,255,255,.09);
+  border-radius:8px;color:#858c88;background:rgba(255,255,255,.025);
+  font-size:8px;font-weight:800;letter-spacing:.12em;
+}
+.claim-identity-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 12px;
+}
+.claim-identity-grid>div{
+  min-width:0;padding:12px 13px;border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;background:rgba(0,0,0,.13);
+}
+.claim-identity-grid span{display:block;color:#686f6b;font-size:9px;text-transform:uppercase;letter-spacing:.11em}
+.claim-identity-grid strong{display:block;margin-top:6px;color:#d8dbda;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#connectXClaimBtn{width:100%;justify-content:center;background:#eceeed!important;color:#101211!important;border-color:rgba(255,255,255,.16)!important}
+.claim-telegram{
+  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  margin-top:10px;padding:11px 14px;border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;background:rgba(255,255,255,.018);color:#aeb4b1;
+  font-size:11px;font-weight:700;text-decoration:none;letter-spacing:.01em;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+}
+.claim-telegram:hover{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.14);color:#e1e4e3;transform:translateY(-1px)}
+.claim-telegram-icon{width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.07);font-size:10px}
+.claim-telegram-sub{display:block;margin-top:3px;text-align:center;color:#666d69;font-size:9px;font-weight:500}
+.claim-warning{
+  margin-top:10px;padding:11px 12px;border-radius:10px;
+  border:1px solid rgba(214,171,92,.16);
+  background:rgba(214,171,92,.035);color:#77766f;font-size:10px;line-height:1.5;
+}
+.claim-warning strong{color:#a9a08e}
+.campaign-note{
+  margin-top:12px!important;padding:14px 16px!important;
+  border-color:rgba(255,255,255,.065)!important;background:rgba(255,255,255,.012);
+}
+.campaign-note span{color:#686f6b!important;font-size:9px!important}
+.campaign-note p{font-size:11px!important;color:#686f6b!important}
+
+/* Make the reward header less playful and more premium */
+.reward-v2{
+  border-color:rgba(255,255,255,.085)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012))!important;
+  box-shadow:0 16px 55px rgba(0,0,0,.17),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.reward-v2-glow{display:none}
+.reward-v2-badge{color:#8d9490!important}
+.reward-v2-badge span{background:#aeb4b0!important;box-shadow:none!important}
+.reward-v2-amount{border-color:rgba(255,255,255,.08)!important;background:rgba(0,0,0,.18)!important}
+.reward-v2-amount strong{color:#e3e6e4!important}
+.reward-v2-track{background:#222523!important}
+.reward-v2-track i{background:#bfc4c1!important;box-shadow:none!important}
+.reward-v2-progress>strong{color:#b4bab7!important}
+.reward-v2-unlocked{border-color:rgba(255,255,255,.10)!important;background:rgba(255,255,255,.025)!important}
+.reward-v2-check{background:#e4e7e5!important;color:#111312!important;box-shadow:none!important}
+.reward-v2-unlocked strong{color:#d9ddda!important}
+
+@media(max-width:680px){
+  .campaign-task{grid-template-columns:28px 40px minmax(0,1fr);padding:13px}
+  .task-action{grid-column:3;justify-self:stretch;width:100%;margin-top:3px}
+  .campaign-claim-lock{padding:16px}
+  .claim-identity-grid{grid-template-columns:1fr}
+  .campaign-claim-lock-icon{display:none}
+}
+</style>
+
+<style id="xpay-campaign-complete-reveal">
+/* Completion reveal: premium, restrained, and only appears once all three tasks are done. */
+.reward-v2{transition:border-color .35s ease,box-shadow .35s ease,background .35s ease}
+.reward-v2.campaign-complete{
+  border-color:rgba(255,255,255,.16)!important;
+  background:radial-gradient(560px 220px at 0% 0%,rgba(255,255,255,.065),transparent 66%),linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.018));
+  box-shadow:0 22px 75px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.reward-v2.campaign-complete .reward-v2-amount{
+  border-color:rgba(255,255,255,.16);
+  background:rgba(255,255,255,.035);
+  animation:rewardAmountReveal .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.reward-v2.campaign-complete .reward-v2-amount strong{color:#fff}
+.reward-v2.campaign-complete .reward-v2-track i{background:linear-gradient(90deg,#fff,#c9cdd0);box-shadow:0 0 18px rgba(255,255,255,.18)}
+.reward-v2.campaign-complete .reward-v2-progress>strong{color:#fff}
+.reward-v2-unlocked{position:relative}
+.reward-v2-unlocked .reward-v2-reveal{
+  margin-left:auto;
+  color:#fff;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.04em;
+  opacity:.9;
+}
+.reward-v2.campaign-complete .reward-v2-unlocked{
+  border-color:rgba(255,255,255,.14);
+  background:rgba(255,255,255,.045);
+  animation:campaignReveal .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.reward-v2.campaign-complete .reward-v2-check{
+  background:#fff!important;color:#090a0a!important;
+  box-shadow:0 0 0 5px rgba(255,255,255,.055),0 8px 28px rgba(255,255,255,.12);
+}
+.reward-v2.campaign-complete .reward-v2-badge{color:#d8dcde}
+.reward-v2.campaign-complete .reward-v2-badge span{background:#fff;box-shadow:0 0 10px rgba(255,255,255,.35)}
+@keyframes rewardAmountReveal{0%{transform:translateY(8px) scale(.94);opacity:.2}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes campaignReveal{0%{transform:translateY(10px);opacity:0;filter:blur(2px)}100%{transform:translateY(0);opacity:1;filter:none}}
+@media(max-width:600px){.reward-v2-unlocked .reward-v2-reveal{font-size:18px}.reward-v2-unlocked{align-items:flex-start}.reward-v2-unlocked .reward-v2-reveal{margin-top:2px}}
+</style>
+
+<style id="xpay-campaign-complete-premium">
+.reward-v2{transition:transform .45s ease, border-color .45s ease, box-shadow .45s ease, background .45s ease;}
+.reward-v2.campaign-complete{
+  border-color:rgba(255,255,255,.20)!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.018) 55%,rgba(183,255,207,.045));
+  box-shadow:0 26px 90px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.025) inset;
+  transform:translateY(-2px);
+}
+.reward-v2.campaign-complete .reward-v2-glow{
+  width:360px;height:360px;left:-110px;top:-190px;
+  background:rgba(183,255,207,.16);filter:blur(60px);
+  animation:completeGlow 2.8s ease-in-out infinite;
+}
+.reward-v2.campaign-complete .reward-v2-badge{color:#d9ffe4}
+.reward-v2.campaign-complete .reward-v2-badge span{background:#d9ffe4;box-shadow:0 0 16px rgba(217,255,228,.85)}
+.reward-v2.campaign-complete .reward-v2-amount{
+  border-color:rgba(183,255,207,.32);
+  background:linear-gradient(145deg,rgba(183,255,207,.13),rgba(0,0,0,.22));
+  box-shadow:0 0 35px rgba(183,255,207,.08),inset 0 1px 0 rgba(255,255,255,.05);
+  animation:rewardAmountReveal .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.reward-v2.campaign-complete .reward-v2-amount strong{color:#e2ffea;text-shadow:0 0 24px rgba(183,255,207,.24)}
+.reward-v2.campaign-complete .reward-v2-track{background:#303631}
+.reward-v2.campaign-complete .reward-v2-track i{background:linear-gradient(90deg,#b7ffcf,#f1fff5);box-shadow:0 0 24px rgba(183,255,207,.42)}
+.reward-v2.campaign-complete .reward-v2-unlocked{
+  margin-top:18px;padding:14px 15px;
+  border-color:rgba(183,255,207,.27);
+  background:linear-gradient(100deg,rgba(183,255,207,.10),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+}
+.reward-v2.campaign-complete .reward-v2-check{
+  width:34px;height:34px;flex-basis:34px;
+  background:#e6ffed;
+  animation:checkReveal .5s .08s cubic-bezier(.2,.8,.2,1) both;
+}
+.reward-v2-reveal{
+  margin-left:auto;padding-left:16px;
+  color:#dfffe8;font-size:18px;font-weight:950;letter-spacing:-.04em;
+  opacity:0;transform:scale(.82);
+}
+.reward-v2.campaign-complete .reward-v2-reveal{animation:rewardReveal .55s .14s cubic-bezier(.2,.8,.2,1) both}
+.campaign-task.is-complete{transform:translateX(2px)}
+.campaign-task.is-complete .task-number{font-weight:900}
+@keyframes rewardReveal{0%{opacity:0;transform:scale(.78) translateY(5px);filter:blur(4px)}70%{opacity:1;transform:scale(1.08) translateY(0);filter:none}100%{opacity:1;transform:scale(1)}}
+@keyframes checkReveal{0%{opacity:0;transform:scale(.65) rotate(-12deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes completeGlow{0%,100%{opacity:.72;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+@media(max-width:680px){
+  .reward-v2.campaign-complete{transform:none}
+  .reward-v2.campaign-complete .reward-v2-unlocked{display:grid;grid-template-columns:34px 1fr auto;align-items:center}
+  .reward-v2-reveal{padding-left:8px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
 <div aria-label="XPay entry" class="entry-gate" id="entryGate">
@@ -1384,9 +1645,10 @@ body.x-coming-open{overflow:hidden!important}
   <div class="reward-v2-unlocked" id="rewardUnlocked" aria-live="polite">
     <div class="reward-v2-check">✓</div>
     <div>
-      <strong>Reward unlocked</strong>
-      <span>Your $3 welcome reward is now in Wallet.</span>
+      <strong>Campaign complete</strong>
+      <span>Your $3 reward is reserved. Connect the matching X account to unlock the claim.</span>
     </div>
+    <div class="reward-v2-reveal">$3</div>
   </div>
 </div>
 <div class="campaign-tasks">
@@ -1394,8 +1656,8 @@ body.x-coming-open{overflow:hidden!important}
 <div class="task-number">01</div>
 <div class="task-icon">◎</div>
 <div class="task-content">
-<h4>Your Username</h4>
-<p id="usernameTaskText">Choose your XPay username.</p>
+<h4>Your X Username</h4>
+<p id="usernameTaskText">Enter your X username. Use the same X username you will connect below to claim your reward.</p>
 <div class="username-editor" id="usernameEditor">
 <span class="username-at">@</span>
 <input aria-label="XPay username" autocapitalize="none" autocomplete="username" id="campaignUsernameInput" inputmode="text" maxlength="15" placeholder="yourname" spellcheck="false" type="text"/>
@@ -1415,24 +1677,49 @@ body.x-coming-open{overflow:hidden!important}
 <div class="task-number">03</div>
 <div class="task-icon">↗</div>
 <div class="task-content">
-<h4>Refer on X</h4>
-<p id="referralTaskText">Share your personal XPay referral link.</p>
+<h4>Post on X</h4>
+<p id="referralTaskText">Post about XPay on X using the main website link: https://xpay.family</p>
 </div>
-<div class="referral-task-actions"><button class="task-action" id="referTaskBtn" onclick="handleReferralTaskAction()" type="button">Share on X</button></div>
+<div class="referral-task-actions"><button class="task-action" id="referTaskBtn" onclick="handleReferralTaskAction()" type="button">Post on X</button></div>
 </div>
 </div>
-<div class="referral-card" id="referralBox" style="display:none">
+<div class="campaign-claim-lock" id="campaignClaimLock">
+<div class="campaign-claim-lock-head">
 <div>
-<span class="campaign-kicker">Your referral link</span>
-<p class="referral-value" id="referralLinkDisplay"></p>
+<div class="campaign-kicker">REWARD SECURITY</div>
+<h3>Reward claim locked</h3>
+<p id="claimLockMessage">Complete all 3 tasks, then connect the same X account that matches the username you submitted above.</p>
 </div>
-<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="task-action" onclick="copyReferralLink()" type="button">Copy link</button></div>
+<div class="campaign-claim-lock-icon" aria-hidden="true">LOCKED</div>
+</div>
+<div class="claim-identity-grid">
+<div><span>Submitted X username</span><strong id="submittedXUsername">Not set</strong></div>
+<div><span>Connected X account</span><strong id="connectedXUsername">Not connected</strong></div>
+</div>
+<button class="task-action" id="connectXClaimBtn" onclick="connectXForClaim()" type="button">Connect X to Claim</button>
+<a class="claim-telegram" id="claimTelegramLink" href="https://t.me/Xpaydotfamily" target="_blank" rel="noopener noreferrer" aria-label="Join XPay Telegram for more information" style="display:none">
+  <span class="claim-telegram-icon">✈</span>
+  <span>Join Telegram for more information<span class="claim-telegram-sub">Campaign updates, announcements &amp; XPay news</span></span>
+</a>
+<div class="claim-warning"><strong>Important:</strong> The connected X account must match the submitted X username exactly. If a different X account is connected, your $3 reward will remain locked until the matching account is connected.</div>
 </div>
 <div class="campaign-note">
 <span>Reward</span>
-<p>Complete all three steps to unlock <strong>$3.00</strong>. Your reward balance will appear in Wallet.</p>
+<p>Complete all three steps to unlock <strong>$3.00</strong>. After that, claim is available only from the same X account matching your submitted X username.</p>
 </div>
 </section>
+<div class="campaign-complete-modal" id="campaignCompleteModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="ccmTitle">
+  <div class="campaign-complete-dialog">
+    <div class="ccm-check" aria-hidden="true">✓</div>
+    <div class="ccm-eyebrow">WELCOME CAMPAIGN</div>
+    <h3 class="ccm-title" id="ccmTitle">Congratulations!</h3>
+    <p class="ccm-copy">You have successfully completed all 3 campaign tasks. Your reward is now reserved for the verification step.</p>
+    <div class="ccm-reward"><small>REWARD RESERVED</small><strong>$3.00</strong></div>
+    <div class="ccm-next"><strong>Next step: Connect the same X account</strong><span>The X account you connect must match the X username submitted in the campaign.</span></div>
+    <a class="ccm-tg" href="https://t.me/Xpaydotfamily" target="_blank" rel="noopener noreferrer"><span class="ccm-tg-icon">✈</span> Join Telegram for more information</a>
+    <button class="ccm-close" id="campaignCompleteClose" type="button" onclick="continueToClaim()">Continue to claim</button>
+  </div>
+</div>
 <section class="screen" id="whitepaper">
 <button class="back" data-go="home" type="button">← Home</button>
 <div class="page-head">
@@ -2010,30 +2297,36 @@ function quoteSwap(){
 
   function refreshCampaign(){
     const s=campaignState(), name=username();
+    // Keep saved username and completion state synchronized across older sessions.
     if(s.username && !name){ s.username=false; saveCampaign(s); }
-    const count=campaignCount(s), reward=campaignReward(s);
-    if($('campaignRewardTotal')) $('campaignRewardTotal').textContent='$'+reward.toFixed(2);
+    else if(name && !s.username){ s.username=true; saveCampaign(s); }
+    const count=campaignCount(s);
+    if($('campaignRewardTotal')) $('campaignRewardTotal').textContent=count===3?'$3.00':'—';
     if($('campaignSummaryText')) $('campaignSummaryText').textContent=count===3?'All 3 steps completed':count+' of 3 steps completed';
     if($('campaignRing')) $('campaignRing').textContent=Math.round(count/3*100)+'%';
     if($('campaignProgressBar')) $('campaignProgressBar').style.width=(count/3*100)+'%';
-    if($('rewardCardTitle')) $('rewardCardTitle').textContent=count===3?'Welcome reward unlocked':'Unlock your welcome reward';
-    if($('rewardCardSub')) $('rewardCardSub').textContent=count===3?'Nice work — all 3 steps are complete. Your reward is ready in Wallet.':'Finish the 3 steps below and unlock your $3 reward.';
-    if($('rewardStatus')) $('rewardStatus').textContent=count===3?'Completed':(3-count)+' step'+((3-count)===1?'':'s')+' left';
+    if($('rewardCardTitle')) $('rewardCardTitle').textContent=count===3?'Campaign complete':'Unlock your welcome reward';
+    if($('rewardCardSub')) $('rewardCardSub').textContent=count===3?'You completed every step. Your $3 reward is reserved while the matching X account is verified.':'Finish the 3 steps below and unlock your $3 reward.';
+    if($('rewardStatus')) $('rewardStatus').textContent=count===3?'REWARD RESERVED':(3-count)+' step'+((3-count)===1?'':'s')+' left';
     if($('rewardUnlocked')) $('rewardUnlocked').classList.toggle('show',count===3);
-    if($('usernameTaskText')) $('usernameTaskText').textContent=name?'@'+name+' is your XPay username.':'Choose your XPay username.';
-    if($('referralTaskText')) $('referralTaskText').textContent=name?'Share your personal XPay referral link.':'Set your username first to create your link.';
+    if($('rewardCard')) $('rewardCard').classList.toggle('campaign-complete',count===3);
+    if($('usernameTaskText')) $('usernameTaskText').textContent=name?'@'+name+' is saved as your X username. Connect this same X account to claim your reward.':'Enter your X username. Use the same X username you will connect below to claim your reward.';
+    if($('referralTaskText')) $('referralTaskText').textContent='Post about XPay on X using the main website link: https://xpay.family';
     if($('campaignUsernameInput')){ $('campaignUsernameInput').value=name||''; $('campaignUsernameInput').disabled=!!s.username; }
     if($('usernameTaskBtn')){$('usernameTaskBtn').textContent=s.username?'Completed':'Save username';$('usernameTaskBtn').disabled=!!s.username;}
     if($('followTaskBtn')){$('followTaskBtn').textContent=s.follow?'Completed':'Follow';$('followTaskBtn').classList.toggle('is-complete',!!s.follow);$('followTaskBtn').setAttribute('aria-disabled',s.follow?'true':'false');}
-    if($('referTaskBtn')){$('referTaskBtn').textContent=s.refer?'Edit':'Share on X';$('referTaskBtn').disabled=false;}
-    document.querySelectorAll('.campaign-task').forEach(card=>{const key=card.id.replace('task-','');card.classList.toggle('is-complete',!!s[key]);});
-    if($('referralBox')){
-      if(name){
-        const link=referralBaseUrl()+'/join?ref='+encodeURIComponent(name);
-        if($('referralLinkDisplay')) $('referralLinkDisplay').textContent=link;
-        $('referralBox').style.display='flex';
-      } else { $('referralBox').style.display='none'; }
+    if($('referTaskBtn')){
+      $('referTaskBtn').textContent=s.refer?'Post again':'Post on X';
+      $('referTaskBtn').disabled=false;
+      $('referTaskBtn').setAttribute('aria-label',s.refer?'Post about XPay on X again':'Post about XPay on X');
     }
+    document.querySelectorAll('.campaign-task').forEach(card=>{const key=card.id.replace('task-','');card.classList.toggle('is-complete',!!s[key]);});
+    if($('referralBox')) $('referralBox').style.display='none';
+    if($('submittedXUsername')) $('submittedXUsername').textContent=name?'@'+name:'Not set';
+    if($('connectedXUsername')) $('connectedXUsername').textContent='Not connected';
+    if($('claimLockMessage')) $('claimLockMessage').textContent=count===3?'Connect the same X account that matches the username you submitted above to claim your $3 reward.':'Complete all 3 tasks, then connect the same X account that matches the username you submitted above.';
+    if($('connectXClaimBtn')) $('connectXClaimBtn').disabled=count<3;
+    if($('claimTelegramLink')) $('claimTelegramLink').style.display=count===3?'flex':'none';
     refreshWallet(); renderHomeCampaign();
   }
   window.refreshCampaign=refreshCampaign;
@@ -2095,24 +2388,10 @@ function quoteSwap(){
   // After returning from X, silently re-check whether the account now follows XPay.
   
 
-  function referralBaseUrl(){
-    if(location.protocol==='http:' || location.protocol==='https:'){
-      return location.origin.replace(/\/$/,'');
-    }
-    return 'https://xpay.family';
-  }
+  function referralBaseUrl(){ return 'https://xpay.family'; }
   function openReferralTask(){
-    const name=username();
-    if(!name){
-      toast('Set your username first');
-      openUsernameTask();
-      return;
-    }
-    const link=referralBaseUrl()+'/join?ref='+encodeURIComponent(name);
-    if($('referralLinkDisplay')) $('referralLinkDisplay').textContent=link;
-    if($('referralBox')) $('referralBox').style.display='flex';
-    refreshCampaign();
-    toast('Referral link ready');
+    if($('referralLinkDisplay')) $('referralLinkDisplay').textContent='https://xpay.family';
+    toast('Main XPay link ready');
   }
   window.openReferralTask=openReferralTask;
 
@@ -2129,23 +2408,11 @@ function quoteSwap(){
         document.body.appendChild(t); t.select(); copied=document.execCommand('copy'); t.remove();
       }catch{}
     }
-    toast(copied ? 'Referral link copied' : 'Copy failed — select the link manually');
+    toast(copied ? 'XPay link copied' : 'Copy failed — select the link manually');
   }
   window.copyReferralLink=copyReferralLink;
   function handleReferralTaskAction(){
-    const state=campaignState();
-    if(state.refer){
-      state.refer=false;
-      state.username=false;
-      saveCampaign(state);
-      if($('campaignUsernameInput')) $('campaignUsernameInput').disabled=false;
-      if($('usernameTaskBtn')) $('usernameTaskBtn').textContent='Save username';
-      refreshCampaign();
-      const input=$('campaignUsernameInput');
-      if(input){ input.focus(); input.select(); }
-      toast('Edit your username, then share again');
-      return;
-    }
+    // Re-posting must never reset the saved X username or other campaign tasks.
     shareReferralOnX();
   }
   window.handleReferralTaskAction=handleReferralTaskAction;
@@ -2169,39 +2436,75 @@ function quoteSwap(){
   }
   window.copyReferralImage=copyReferralImage;
 
-  function shareReferralOnX(){
-    const name=username();
-    if(!name){
-      toast('Set your username first');
-      openUsernameTask();
-      return;
-    }
-
-    const value=referralBaseUrl()+'/join?ref='+encodeURIComponent(name);
-    if($('referralLinkDisplay')) $('referralLinkDisplay').textContent=value;
-    if($('referralBox')) $('referralBox').style.display='flex';
-
+  async function shareReferralOnX(){
     const text='Meet @Xpaydotfamily.\n\nA simpler way to Pay, Swap & Earn onchain. Build on @RobinhoodApp\n\nComplete the 3-step Welcome Campaign & unlock your $3 reward.\n\n𝕏 @Xpaydotfamily\n✈️ t.me/Xpaydotfamily\n\nPay. Swap. Simple.\n\nJoin XPay 👇';
+    const value='https://xpay.family';
     const share='https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(value);
-
-    // Open X directly. Do not use navigator.share here, because that opens the
-    // Android/iOS system share sheet first and makes the user tap X manually.
-    const state=campaignState();
-    state.refer=true;
-    saveCampaign(state);
-    refreshCampaign();
-
-    try{
-      window.location.href=share;
-    }catch{
-      const popup=window.open(share,'_blank');
-      if(popup){ try{ popup.opener=null; }catch{} }
-      else toast('Open X to finish sharing.');
+    const popup=window.open(share,'_blank');
+    if(popup){
+      try{ popup.opener=null; }catch{}
+      const state=campaignState();
+      const wasComplete=campaignCount(state)===3;
+      state.refer=true;
+      saveCampaign(state);
+      refreshCampaign();
+      toast('X composer opened');
+      if(!wasComplete && campaignCount(state)===3){
+        setTimeout(openCampaignCompletePopup,450);
+      }
+    }else{
+      toast('Open X to finish sharing.');
     }
   }
   window.shareReferralOnX=shareReferralOnX;
 
   
+
+  let campaignCompletePopupShown=false;
+  function openCampaignCompletePopup(){
+    const modal=$('campaignCompleteModal');
+    if(!modal || campaignCompletePopupShown)return;
+    campaignCompletePopupShown=true;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    setTimeout(()=>$('campaignCompleteClose')?.focus(),30);
+  }
+  function closeCampaignCompletePopup(){
+    const modal=$('campaignCompleteModal');
+    if(!modal)return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    if(!$('drawerBg')?.classList.contains('open')&&!$('walletBg')?.classList.contains('open')&&!$('confirmBg')?.classList.contains('open')) document.body.style.overflow='';
+  }
+  function continueToClaim(){
+    closeCampaignCompletePopup();
+    const target=$('campaignClaimLock');
+    const button=$('connectXClaimBtn');
+    setTimeout(()=>{
+      target?.scrollIntoView({behavior:'smooth',block:'center'});
+      setTimeout(()=>button?.focus(),350);
+    },40);
+  }
+  window.continueToClaim=continueToClaim;
+  window.openCampaignCompletePopup=openCampaignCompletePopup;
+  window.closeCampaignCompletePopup=closeCampaignCompletePopup;
+
+  function initCampaignCompletePopup(){
+    $('campaignCompleteClose')?.addEventListener('click',closeCampaignCompletePopup);
+    $('campaignCompleteModal')?.addEventListener('click',(e)=>{if(e.target.id==='campaignCompleteModal') closeCampaignCompletePopup();});
+    document.addEventListener('keydown',(e)=>{if(e.key==='Escape' && $('campaignCompleteModal')?.classList.contains('open')) closeCampaignCompletePopup();});
+  }
+  initCampaignCompletePopup();
+
+  function connectXForClaim(){
+    const s=campaignState(), name=username();
+    if(!name){ toast('Enter your X username first'); openUsernameTask(); return; }
+    if(campaignCount(s)<3){ toast('Complete all 3 campaign steps first'); return; }
+    // Real identity matching must be completed by X OAuth on the backend.
+    openXComingSoon();
+  }
+  window.connectXForClaim=connectXForClaim;
 
   function refreshWallet(){
     const usdc=getNum(KEYS.usdc), x=getNum(KEYS.x), eth=getNum(KEYS.eth), reward=campaignReward();
@@ -2211,32 +2514,12 @@ function quoteSwap(){
     if($('sUsdc'))$('sUsdc').textContent=usdc.toFixed(2);
     if($('sX'))$('sX').textContent=x.toFixed(2);
     if($('wReward'))$('wReward').textContent='$'+reward.toFixed(2);
-    if($('claimStatus'))$('claimStatus').textContent=reward?'Campaign reward: $3.00':'Campaign reward: $0.00';
-    if($('claimStatusSub'))$('claimStatusSub').textContent=reward?'All campaign tasks completed. Claim soon.':'Complete all 3 campaign tasks to unlock your reward.';
+    if($('claimStatus'))$('claimStatus').textContent=reward?'Campaign reward reserved: $3.00':'Campaign reward: $0.00';
+    if($('claimStatusSub'))$('claimStatusSub').textContent=reward?'All campaign tasks completed. Connect the matching X account to unlock the claim.':'Complete all 3 campaign tasks to unlock your reward.';
     if($('claimBtn')){$('claimBtn').disabled=true;$('claimBtn').textContent='Claim soon';}
     updatePayBalance();
   }
   window.refreshWallet=refreshWallet;
-
-  function handleIncomingReferral(){
-    const params = new URLSearchParams(window.location.search);
-    const ref = (params.get('ref') || '').replace(/^@/,'').trim().toLowerCase();
-    if(!ref || !validUsername(ref)) return false;
-
-    // Keep the referring username available for the campaign/join flow.
-    safeSet('xpay_referrer', ref);
-
-    // Show the campaign screen for visitors arriving through a referral link.
-    // The referral parameter is removed from the visible URL after capture.
-    try{
-      const cleanUrl = window.location.origin + '/';
-      window.history.replaceState({}, document.title, cleanUrl);
-    }catch{}
-
-    go('campaign');
-    return true;
-  }
-  window.handleIncomingReferral = handleIncomingReferral;
 
   function init(){
     initEntryGate();
@@ -2261,7 +2544,7 @@ function quoteSwap(){
     ['fromAsset','toAsset'].forEach(id=>$(id)?.addEventListener('change',()=>{quoteSwap();updateActionStates();}));
     $('swapAmount')?.addEventListener('input',quoteSwap);
     updateRecipientPreview(); quoteSwap(); refreshWallet(); refreshCampaign(); renderActivity(); updateActionStates();
-    if(!handleIncomingReferral()) go('home');
+    go('home');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
